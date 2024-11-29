@@ -17,7 +17,7 @@ body {
 }
 
 input {
-  @apply border border-solid border-black rounded-md;
+  @apply border border-solid border-black rounded-md text-lg;
 }
 
 .primary-button {

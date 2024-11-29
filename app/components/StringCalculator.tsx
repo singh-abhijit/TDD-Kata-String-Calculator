@@ -25,22 +25,16 @@ const StringCalculator: React.FC = () => {
   };
 
   return (
-    <div>
-      <h4>TDD Kata</h4>
-      <h5>String Calculator</h5>
-      <div className="flex flex-col items-end">
-        <input
-          type="text"
-          ref={inputRef}
-          onChange={(abc) => {
-            console.log(abc.target.value.split(/,|\n/));
-          }}
-        />
+    <div className="min-w-[360px] p-5 border border-solid shadow-md rounded-md">
+      <h4 className="text-xl mb-2">TDD Kata</h4>
+      <h5 className="text-lg mb-8">String Calculator</h5>
+      <div className="flex flex-col items-center">
+        <input className="w-full mx-5 mb-2" type="text" ref={inputRef} />
 
         <button
           type="button"
           onClick={updateSum}
-          className="primary-button mt-2 mb-4"
+          className="primary-button mt-2 mb-8"
         >
           Calculate
         </button>
