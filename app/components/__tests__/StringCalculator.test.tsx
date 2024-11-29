@@ -1,24 +1,63 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom"; // For custom matchers like .toBeInTheDocument()
-import StringCalculator from "../StringCalculator";
+import { calculateSumOfString } from "../../utils";
 
-describe("StringCalculator Component", () => {
-  test("should display a default result of 0", () => {
-    render(<StringCalculator />);
-    const resultElement = screen.getByText(/Result: 0/i);
-    expect(resultElement).toBeInTheDocument();
+describe("calculateSumOfString", () => {
+  it("should return sum 0 for empty input", () => {
+    const result = calculateSumOfString("");
+    expect(result.sum).toBe(0);
+    expect(result.negativeNumbers).toEqual([]);
   });
 
-  test("basic requirement : should calculate the sum of comma-separated numbers", () => {
-    render(<StringCalculator />);
-    const inputElement = screen.getByRole("textbox");
-    const buttonElement = screen.getByRole("button", { name: /calculate/i });
+  it("should return sum 0 for input with only negative numbers", () => {
+    const result = calculateSumOfString("-1,-2,-3");
+    expect(result.sum).toBe(0);
+    expect(result.negativeNumbers).toEqual([-1, -2, -3]);
+  });
 
-    fireEvent.change(inputElement, { target: { value: "1,2,3" } });
+  it("should calculate sum with comma delimiter", () => {
+    const result = calculateSumOfString("1,2,3,4,5");
+    expect(result.sum).toBe(15);
+    expect(result.negativeNumbers).toEqual([]);
+  });
 
-    fireEvent.click(buttonElement);
+  it("should calculate sum with newline delimiter", () => {
+    const result = calculateSumOfString("1\n2\n3\n4\n5");
+    expect(result.sum).toBe(15);
+    expect(result.negativeNumbers).toEqual([]);
+  });
 
-    const resultElement = screen.getByText(/Result: 6/i);
-    expect(resultElement).toBeInTheDocument();
+  it("should calculate sum with mixed comma and newline delimiters", () => {
+    const result = calculateSumOfString("1,2\n3,4\n5");
+    expect(result.sum).toBe(15);
+    expect(result.negativeNumbers).toEqual([]);
+  });
+
+  it("should calculate sum with custom delimiter", () => {
+    const result = calculateSumOfString("//;\n1;2;3;4;5");
+    expect(result.sum).toBe(15);
+    expect(result.negativeNumbers).toEqual([]);
+  });
+
+  it("should calculate sum with custom delimiter and negative numbers", () => {
+    const result = calculateSumOfString("//;\n1;-2;3;-4;5");
+    expect(result.sum).toBe(9);
+    expect(result.negativeNumbers).toEqual([-2, -4]);
+  });
+
+  it("should return sum 0 if input string is not valid", () => {
+    const result = calculateSumOfString("abc,def,ghi");
+    expect(result.sum).toBe(0);
+    expect(result.negativeNumbers).toEqual([]);
+  });
+
+  it("should return sum 0 for input with only negative numbers", () => {
+    const result = calculateSumOfString("-5,-10,-20");
+    expect(result.sum).toBe(0);
+    expect(result.negativeNumbers).toEqual([-5, -10, -20]);
+  });
+
+  it("should correctly handle mixed positive and negative numbers", () => {
+    const result = calculateSumOfString("1,-2,3,-4,5");
+    expect(result.sum).toBe(9);  // (1 + 3 + 5)
+    expect(result.negativeNumbers).toEqual([-2, -4]);
   });
 });
